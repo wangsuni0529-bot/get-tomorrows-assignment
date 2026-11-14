@@ -1,30 +1,30 @@
-import unittest
-from datetime import date, datetime, timezone
-
 import tempfile
+import unittest
+from datetime import UTC, datetime
 
-from study_agent import choose_tool_call
-from study_memory import (
+from study_agent.agenda import agenda_section, build_study_agenda
+from study_agent.agent import choose_tool_call
+from study_agent.client import headers_for_url
+from study_agent.memory import (
     is_assignment_muted,
     is_prep_muted,
     load_memory,
     mute_assignment,
     mute_prep,
 )
-from study_tools import (
-    build_study_agenda,
+from study_agent.normalize import get_assignment_status, get_low_priority_reason
+from study_agent.prep import (
     collect_prep_work,
     dedupe_and_rank_prep_work,
+    fetch_module_item_text,
+)
+from study_agent.prep_text import (
     discussion_status_from_entries,
     extract_specific_prep_tasks,
-    fetch_module_item_text,
     filter_prep_courses,
-    get_assignment_status,
-    get_low_priority_reason,
 )
 
-
-NOW = datetime(2026, 9, 2, 12, 0, tzinfo=timezone.utc)
+NOW = datetime(2026, 9, 2, 12, 0, tzinfo=UTC)
 
 
 class StudyToolsTests(unittest.TestCase):
@@ -323,7 +323,10 @@ class StudyToolsTests(unittest.TestCase):
                 {
                     "id": 401,
                     "title": "Ask A Question",
-                    "message": "<p>This is an ungraded discussion area that you can use to post general class questions.</p>",
+                    "message": (
+                        "<p>This is an ungraded discussion area that you can use "
+                        "to post general class questions.</p>"
+                    ),
                     "html_url": "https://canvas.example/discussions/401",
                     "assignment_id": None,
                 }
@@ -382,7 +385,7 @@ class StudyToolsTests(unittest.TestCase):
             announcements=[],
             syllabus_by_course={},
             days=3,
-            now=datetime(2026, 9, 7, 12, 0, tzinfo=timezone.utc),
+            now=datetime(2026, 9, 7, 12, 0, tzinfo=UTC),
         )
 
         self.assertEqual(prep_work, [])
@@ -412,7 +415,7 @@ class StudyToolsTests(unittest.TestCase):
             announcements=[],
             syllabus_by_course={},
             days=7,
-            now=datetime(2026, 9, 7, 12, 0, tzinfo=timezone.utc),
+            now=datetime(2026, 9, 7, 12, 0, tzinfo=UTC),
         )
 
         self.assertEqual(len(prep_work), 1)
@@ -423,7 +426,7 @@ class StudyToolsTests(unittest.TestCase):
             {"id": 202, "name": "HBEH510.001.FA23"},
             {"id": 303, "name": "BSPH Program in HPM"},
         ]
-        now = datetime(2026, 9, 7, 12, 0, tzinfo=timezone.utc)
+        now = datetime(2026, 9, 7, 12, 0, tzinfo=UTC)
 
         filtered = filter_prep_courses(courses, now)
 
@@ -435,14 +438,17 @@ class StudyToolsTests(unittest.TestCase):
             "source_type": "page",
             "title": "Week 4 Before Class",
             "url": "https://canvas.example/pages/week-4",
-            "text": "Before Tuesday class, read The Summer Day and post a short response. Optional: browse the extra links.",
+            "text": (
+                "Before Tuesday class, read The Summer Day and post a short response. "
+                "Optional: browse the extra links."
+            ),
         }
 
         tasks = extract_specific_prep_tasks(
             course,
             source,
             days=7,
-            now=datetime(2026, 9, 7, 12, 0, tzinfo=timezone.utc),
+            now=datetime(2026, 9, 7, 12, 0, tzinfo=UTC),
         )
 
         self.assertEqual(len(tasks), 1)
@@ -531,6 +537,55 @@ class StudyToolsTests(unittest.TestCase):
         status = discussion_status_from_entries(entries, current_user_id=42)
 
         self.assertEqual(status["completion_status"], "not posted")
+
+    def test_assignment_without_due_date_is_left_out_of_the_agenda(self):
+        courses = [{"id": 101, "name": "HPM 540"}]
+        assignments_by_course = {
+            101: [
+                {
+                    "name": "Someday draft",
+                    "due_at": None,
+                    "submission": {"workflow_state": "unsubmitted"},
+                }
+            ]
+        }
+
+        agenda = build_study_agenda(courses, assignments_by_course, days=7, now=NOW)
+
+        for key in [
+            "overdue_missing",
+            "due_today",
+            "due_tomorrow",
+            "next_days",
+            "low_priority",
+            "submitted",
+        ]:
+            self.assertEqual(agenda[key], [])
+
+    def test_agenda_section_skips_an_item_with_no_due_date(self):
+        section = agenda_section(
+            {"due": None, "status": "unsubmitted", "priority": "normal"},
+            today=NOW.date(),
+            tomorrow=NOW.date(),
+            window_end=NOW.date(),
+            overdue_start=NOW.date(),
+            include_submitted=True,
+        )
+
+        self.assertIsNone(section)
+
+    def test_canvas_auth_header_is_kept_on_the_canvas_host_only(self):
+        headers = {"Authorization": "Bearer secret-token"}
+        base_url = "https://uncch.instructure.com"
+
+        self.assertEqual(
+            headers_for_url(f"{base_url}/files/1/download", headers, base_url),
+            headers,
+        )
+        self.assertEqual(
+            headers_for_url("https://publisher.example/reading.pdf", headers, base_url),
+            {},
+        )
 
 
 if __name__ == "__main__":

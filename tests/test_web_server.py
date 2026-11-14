@@ -1,8 +1,11 @@
 import json
+import os
 import unittest
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+from unittest.mock import patch
 
-from web_server import (
+from study_agent.web import (
+    canvas_is_configured,
     filter_agenda_sources,
     mode_to_include_prep,
     parse_bool,
@@ -53,7 +56,7 @@ class WebServerTests(unittest.TestCase):
 
     def test_serialize_agenda_returns_json_safe_dates(self):
         agenda = {
-            "generated_at": datetime(2026, 9, 13, 12, 0, tzinfo=timezone.utc),
+            "generated_at": datetime(2026, 9, 13, 12, 0, tzinfo=UTC),
             "days": 1,
             "overdue_missing": [],
             "due_today": [
@@ -62,7 +65,7 @@ class WebServerTests(unittest.TestCase):
                     "assignment_id": 123,
                     "name": "Problem Set",
                     "status": "unsubmitted",
-                    "due": datetime(2026, 9, 13, 23, 59, tzinfo=timezone.utc),
+                    "due": datetime(2026, 9, 13, 23, 59, tzinfo=UTC),
                     "url": "https://canvas.example/assignments/1",
                     "points": 10,
                     "priority": "normal",
@@ -80,12 +83,15 @@ class WebServerTests(unittest.TestCase):
         payload = serialize_agenda(agenda)
 
         json.dumps(payload)
-        self.assertEqual(payload["sections"][1]["items"][0]["dueLabel"], "Sun Sep 13 2026, 11:59 PM")
+        self.assertEqual(
+            payload["sections"][1]["items"][0]["dueLabel"],
+            "Sun Sep 13 2026, 11:59 PM",
+        )
         self.assertEqual(payload["sections"][1]["items"][0]["assignmentId"], 123)
 
     def test_serialize_agenda_returns_prep_key(self):
         agenda = {
-            "generated_at": datetime(2026, 9, 13, 12, 0, tzinfo=timezone.utc),
+            "generated_at": datetime(2026, 9, 13, 12, 0, tzinfo=UTC),
             "days": 1,
             "overdue_missing": [],
             "due_today": [],
@@ -116,6 +122,18 @@ class WebServerTests(unittest.TestCase):
             payload["sections"][4]["items"][0]["prepKey"],
             "101|discussion|opening prompt|https://canvas.example/d/1",
         )
+
+    def test_canvas_is_not_configured_when_the_token_is_missing(self):
+        with patch.dict(os.environ, {"CANVAS_BASE_URL": "", "CANVAS_TOKEN": ""}, clear=False):
+            self.assertFalse(canvas_is_configured())
+
+    def test_canvas_is_configured_when_url_and_token_are_set(self):
+        env = {
+            "CANVAS_BASE_URL": "https://canvas.example",
+            "CANVAS_TOKEN": "not-a-real-token",
+        }
+        with patch.dict(os.environ, env, clear=False):
+            self.assertTrue(canvas_is_configured())
 
 
 if __name__ == "__main__":

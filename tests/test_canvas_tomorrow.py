@@ -1,7 +1,7 @@
 import unittest
 from datetime import date
 
-from canvas_tomorrow import collect_assignments_due_on
+from study_agent.tomorrow import collect_assignments_due_on
 
 
 class CanvasTomorrowTests(unittest.TestCase):
