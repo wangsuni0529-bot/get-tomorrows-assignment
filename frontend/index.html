@@ -3,52 +3,56 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Study Agent</title>
-    <link rel="stylesheet" href="/style.css" />
+    <title>Get Tomorrow's Assignment</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="app-shell">
       <aside class="sidebar" aria-label="Local Study Agent status">
         <div class="brand">
-          <div class="brand-mark" aria-hidden="true">S</div>
+          <div class="brand-mark" aria-hidden="true">GT</div>
           <div>
-            <p class="brand-name">Study Agent</p>
-            <p class="brand-subtitle">Local Canvas workspace</p>
+            <p class="brand-name">Get Tomorrow's Assignment</p>
+            <p class="brand-subtitle">A study agenda for Canvas</p>
           </div>
         </div>
 
         <div class="side-status">
           <p class="side-label">Connection</p>
-          <div class="connection-pill">
+          <div class="connection-pill is-demo" id="connection-pill">
             <span class="pulse" aria-hidden="true"></span>
-            Local backend
+            <span id="connection-label">Demo data</span>
           </div>
         </div>
 
         <div class="side-status">
           <p class="side-label">Privacy</p>
-          <p class="side-copy">Your Canvas token stays in this computer's .env file.</p>
+          <p class="side-copy" id="privacy-copy">This preview uses fictional courses. No Canvas token is sent anywhere.</p>
         </div>
 
-        <div class="side-status muted-box">
+        <div class="side-status">
           <p class="side-label">Memory</p>
-          <p class="side-copy">Muted low-priority items stay local.</p>
-        </div>
-
-        <div class="future-shell" aria-label="Future local shell placeholders">
-          <button disabled>Account later</button>
-          <button disabled>History later</button>
+          <p class="side-copy">Muted low-priority items stay on this computer.</p>
         </div>
       </aside>
 
       <main class="main">
         <header class="topbar">
           <div>
-            <p class="eyebrow">Canvas Study Agent</p>
-            <h1>What should I do?</h1>
+            <p class="eyebrow">Get Tomorrow's Assignment</p>
+            <h1>What should I do next?</h1>
+            <p class="lede">Hard deadlines first. Possible prep stays in its own section.</p>
           </div>
-          <button class="refresh-button" id="refresh-button" type="button">Refresh</button>
+          <div class="topbar-actions">
+            <span id="data-badge" class="data-badge">Demo data</span>
+            <button class="refresh-button" id="refresh-button" type="button">Refresh</button>
+          </div>
         </header>
+
+        <p id="demo-note" class="demo-note">
+          Fictional courses for this preview. Nothing here is a real Canvas account. Open Canvas
+          goes to the public Canvas site.
+        </p>
 
         <section class="agent-panel" aria-label="Study Agent controls">
           <form class="chat-form" id="chat-form">
@@ -128,13 +132,13 @@
         </section>
 
         <section class="agent-response" aria-live="polite">
-          <p id="agent-message">Click a button or ask a question to check Canvas.</p>
+            <p id="agent-message">Ask a question, or look at tomorrow's sample agenda.</p>
         </section>
 
         <section id="agenda" class="agenda" aria-label="Canvas agenda"></section>
       </main>
     </div>
 
-    <script src="/app.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>

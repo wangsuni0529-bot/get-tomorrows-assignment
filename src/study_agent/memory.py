@@ -1,8 +1,10 @@
+"""Local mute list. This file never leaves the student's computer."""
+
 import json
 from pathlib import Path
+from typing import Any
 
-
-DEFAULT_MEMORY = {
+DEFAULT_MEMORY: dict[str, Any] = {
     "muted_assignment_ids": [],
     "muted_prep_keys": [],
     "preferences": {
@@ -11,7 +13,8 @@ DEFAULT_MEMORY = {
 }
 
 
-def load_memory(path=".study_agent_memory.json"):
+def load_memory(path: str = ".study_agent_memory.json") -> dict[str, Any]:
+    """Read the mute list, or return the default when the file is missing or broken."""
     memory_path = Path(path)
 
     if not memory_path.exists():
@@ -31,12 +34,14 @@ def load_memory(path=".study_agent_memory.json"):
     return memory
 
 
-def save_memory(memory, path=".study_agent_memory.json"):
+def save_memory(memory: dict[str, Any], path: str = ".study_agent_memory.json") -> None:
+    """Write the mute list as JSON."""
     memory_path = Path(path)
     memory_path.write_text(json.dumps(memory, indent=2, sort_keys=True) + "\n")
 
 
-def mute_assignment(assignment_id, path=".study_agent_memory.json"):
+def mute_assignment(assignment_id: Any, path: str = ".study_agent_memory.json") -> None:
+    """Hide one assignment on later runs."""
     memory = load_memory(path)
     muted_ids = {str(item_id) for item_id in memory.get("muted_assignment_ids", [])}
     muted_ids.add(str(assignment_id))
@@ -44,7 +49,8 @@ def mute_assignment(assignment_id, path=".study_agent_memory.json"):
     save_memory(memory, path)
 
 
-def is_assignment_muted(assignment_id, memory):
+def is_assignment_muted(assignment_id: Any, memory: dict[str, Any]) -> bool:
+    """Return whether this assignment id is in the mute list."""
     if assignment_id is None:
         return False
 
@@ -52,7 +58,8 @@ def is_assignment_muted(assignment_id, memory):
     return str(assignment_id) in muted_ids
 
 
-def mute_prep(prep_key, path=".study_agent_memory.json"):
+def mute_prep(prep_key: Any, path: str = ".study_agent_memory.json") -> None:
+    """Hide one prep item on later runs."""
     memory = load_memory(path)
     muted_keys = {str(item_key) for item_key in memory.get("muted_prep_keys", [])}
     muted_keys.add(str(prep_key))
@@ -60,7 +67,8 @@ def mute_prep(prep_key, path=".study_agent_memory.json"):
     save_memory(memory, path)
 
 
-def is_prep_muted(prep_key, memory):
+def is_prep_muted(prep_key: Any, memory: dict[str, Any]) -> bool:
+    """Return whether this prep key is in the mute list."""
     if not prep_key:
         return False
 

@@ -1,0 +1,187 @@
+{
+  "notice": "Fictional sample for the public demo. These are not real courses, students, or assignments.",
+  "assignments": [
+    {
+      "assignmentId": "demo-close-reading",
+      "course": "ENGL 105 — Writing the Made-Up Campus (Demo)",
+      "title": "Close reading of a campus that does not exist",
+      "offsetDays": -2,
+      "time": "23:59",
+      "points": 25,
+      "priority": "normal",
+      "reason": "Canvas hard-deadline assignment",
+      "url": "https://canvas.unc.edu"
+    },
+    {
+      "assignmentId": "demo-robot-name",
+      "course": "COMP 101 — Toy Programs for Humans (Demo)",
+      "title": "Optional: name the class robot",
+      "offsetDays": -1,
+      "time": "17:00",
+      "points": 0,
+      "priority": "low",
+      "reason": "Worth 0 points",
+      "url": "https://canvas.unc.edu"
+    },
+    {
+      "assignmentId": "demo-clinic-brief",
+      "course": "HPM 000 — Fictional Health Policy Studio (Demo)",
+      "title": "One-page brief: the imaginary clinic",
+      "offsetDays": 0,
+      "time": "23:59",
+      "points": 15,
+      "priority": "normal",
+      "reason": "Canvas hard-deadline assignment",
+      "url": "https://canvas.unc.edu"
+    },
+    {
+      "assignmentId": "demo-memoir",
+      "course": "ENGL 105 — Writing the Made-Up Campus (Demo)",
+      "title": "Micro-memoir: a Tuesday that never happened",
+      "offsetDays": 1,
+      "time": "23:59",
+      "points": 40,
+      "priority": "normal",
+      "reason": "Canvas hard-deadline assignment",
+      "url": "https://canvas.unc.edu"
+    },
+    {
+      "assignmentId": "demo-lab-checkin",
+      "course": "COMP 101 — Toy Programs for Humans (Demo)",
+      "title": "Lab check-in: print your own name",
+      "offsetDays": 1,
+      "time": "09:00",
+      "points": 5,
+      "priority": "normal",
+      "reason": "Canvas hard-deadline assignment",
+      "status": "submitted",
+      "url": "https://canvas.unc.edu"
+    },
+    {
+      "assignmentId": "demo-extra-credit",
+      "course": "HPM 000 — Fictional Health Policy Studio (Demo)",
+      "title": "Extra credit: photo of a hallway you invented",
+      "offsetDays": 2,
+      "time": "23:59",
+      "points": 0,
+      "priority": "low",
+      "reason": "Looks like extra credit",
+      "url": "https://canvas.unc.edu"
+    },
+    {
+      "assignmentId": "demo-memo",
+      "course": "HPM 000 — Fictional Health Policy Studio (Demo)",
+      "title": "Policy memo outline: Riverside Partners",
+      "offsetDays": 3,
+      "time": "23:59",
+      "points": 30,
+      "priority": "normal",
+      "reason": "Canvas hard-deadline assignment",
+      "url": "https://canvas.unc.edu"
+    },
+    {
+      "assignmentId": "demo-problem-set",
+      "course": "COMP 101 — Toy Programs for Humans (Demo)",
+      "title": "Story problem set 3: loops that tell a joke",
+      "offsetDays": 4,
+      "time": "23:59",
+      "points": 20,
+      "priority": "normal",
+      "reason": "Canvas hard-deadline assignment",
+      "url": "https://canvas.unc.edu"
+    },
+    {
+      "assignmentId": "demo-peer-notes",
+      "course": "ENGL 105 — Writing the Made-Up Campus (Demo)",
+      "title": "Peer notes on two fictional drafts",
+      "offsetDays": 6,
+      "time": "23:59",
+      "points": 10,
+      "priority": "normal",
+      "reason": "Canvas hard-deadline assignment",
+      "url": "https://canvas.unc.edu"
+    }
+  ],
+  "prep": [
+    {
+      "prepKey": "demo-discussion-classmate",
+      "course": "ENGL 105 — Writing the Made-Up Campus (Demo)",
+      "title": "Discussion: invent a classmate who does not exist",
+      "status": "possible prep",
+      "dueLabel": "No Canvas due date — before Thursday studio",
+      "url": "https://canvas.unc.edu",
+      "sourceType": "discussion",
+      "confidence": "medium",
+      "reason": "Ungraded discussion that still looks like class prep",
+      "evidence": "Post one short scene before Thursday studio. This prompt is fictional demo copy.",
+      "completionStatus": "not posted",
+      "completionReason": "The demo student has not posted yet.",
+      "minDays": 0
+    },
+    {
+      "prepKey": "demo-page-riverside",
+      "course": "HPM 000 — Fictional Health Policy Studio (Demo)",
+      "title": "Before Thursday: read the Riverside Clinic case",
+      "status": "possible prep",
+      "dueLabel": "No Canvas due date — before Thursday class",
+      "url": "https://canvas.unc.edu",
+      "sourceType": "page",
+      "confidence": "high",
+      "reason": "Specific action found in a linked course page",
+      "evidence": "Before Thursday class, read the two-page fictional case. Do not treat this as a graded assignment.",
+      "minDays": 0
+    },
+    {
+      "prepKey": "demo-pdf-packet",
+      "course": "HPM 000 — Fictional Health Policy Studio (Demo)",
+      "title": "Case packet, pages 1–2 only (fictional PDF)",
+      "status": "possible prep",
+      "dueLabel": "No Canvas due date found",
+      "url": "https://canvas.unc.edu",
+      "sourceType": "pdf",
+      "confidence": "high",
+      "reason": "Specific action found in a linked file",
+      "evidence": "Skim the invented case packet before class. The file in this demo is not a real upload.",
+      "minDays": 1
+    },
+    {
+      "prepKey": "demo-syllabus",
+      "course": "ENGL 105 — Writing the Made-Up Campus (Demo)",
+      "title": "Syllabus reading or participation expectation",
+      "status": "possible prep",
+      "dueLabel": "No Canvas due date found",
+      "url": "https://canvas.unc.edu",
+      "sourceType": "syllabus",
+      "confidence": "low",
+      "reason": "Syllabus contains a recurring action and time",
+      "evidence": "Each week, finish the reading before class. Low confidence because a syllabus line is not a due date.",
+      "minDays": 0
+    },
+    {
+      "prepKey": "demo-announcement",
+      "course": "COMP 101 — Toy Programs for Humans (Demo)",
+      "title": "Announcement: Friday studio moves to the imaginary lab",
+      "status": "possible prep",
+      "dueLabel": "No Canvas due date — Friday studio",
+      "url": "https://canvas.unc.edu",
+      "sourceType": "announcement",
+      "confidence": "medium",
+      "reason": "Announcement contains an action and a time",
+      "evidence": "Bring a printed outline to Friday studio. This announcement is sample text.",
+      "minDays": 3
+    },
+    {
+      "prepKey": "demo-module",
+      "course": "COMP 101 — Toy Programs for Humans (Demo)",
+      "title": "Week module: bring a one-page outline",
+      "status": "possible prep",
+      "dueLabel": "No Canvas due date found",
+      "url": "https://canvas.unc.edu",
+      "sourceType": "module",
+      "confidence": "medium",
+      "reason": "Module title looks like prep work",
+      "evidence": "The module says to prepare an outline before studio. It is not a graded Canvas assignment.",
+      "minDays": 3
+    }
+  ]
+}

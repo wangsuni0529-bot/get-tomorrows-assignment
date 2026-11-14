@@ -1,26 +1,31 @@
+"""Local web server for the study agenda. It binds to localhost and serves the frontend."""
+
 import json
 from datetime import datetime
-from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from typing import Any
 from urllib.parse import parse_qs, urlparse
 
-from study_agent import choose_tool_call, unsupported_question_message
-from study_memory import load_memory, mute_assignment, mute_prep
-from study_tools import get_study_agenda
+from study_agent.agenda import get_study_agenda
+from study_agent.agent import choose_tool_call, unsupported_question_message
+from study_agent.client import get_canvas_config
+from study_agent.memory import load_memory, mute_assignment, mute_prep
 
-
-ROOT = Path(__file__).parent
-FRONTEND_DIR = ROOT / "frontend"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+FRONTEND_DIR = PROJECT_ROOT / "frontend"
 MAX_DAYS = 14
 VALID_MODES = {"focused", "balanced", "catch_all"}
 VALID_SOURCE_TYPES = {"discussion", "module", "page", "file", "pdf", "announcement", "syllabus"}
 
 
-def parse_bool(value):
+def parse_bool(value: Any) -> bool:
+    """Accept the usual true-ish query values."""
     return str(value or "").lower() in {"1", "true", "yes", "y", "on"}
 
 
-def parse_days(value, default=1):
+def parse_days(value: Any, default: int = 1) -> int:
+    """Parse a day window and reject values outside 0..14."""
     if value in {None, ""}:
         return default
 
@@ -35,7 +40,8 @@ def parse_days(value, default=1):
     return days
 
 
-def parse_mode(value):
+def parse_mode(value: Any) -> str:
+    """Return focused, balanced, or catch_all."""
     mode = str(value or "balanced").strip().lower().replace("-", "_")
 
     if mode not in VALID_MODES:
@@ -44,11 +50,13 @@ def parse_mode(value):
     return mode
 
 
-def mode_to_include_prep(mode):
+def mode_to_include_prep(mode: str) -> bool:
+    """Focused mode is hard deadlines only. The other modes include possible prep."""
     return parse_mode(mode) != "focused"
 
 
-def parse_source_types(value):
+def parse_source_types(value: Any) -> set[str]:
+    """Parse a comma-separated source list, ignoring unknown names."""
     if value in {None, ""}:
         return set(VALID_SOURCE_TYPES)
 
@@ -61,7 +69,8 @@ def parse_source_types(value):
     return selected or set(VALID_SOURCE_TYPES)
 
 
-def filter_agenda_sources(agenda, source_types):
+def filter_agenda_sources(agenda: dict[str, Any], source_types: set[str]) -> dict[str, Any]:
+    """Drop prep items whose source type was turned off."""
     filtered = dict(agenda)
     filtered["prep_work"] = [
         item
@@ -120,7 +129,8 @@ def serialize_prep(item):
     }
 
 
-def serialize_agenda(agenda):
+def serialize_agenda(agenda: dict[str, Any]) -> dict[str, Any]:
+    """Convert an agenda into JSON-safe sections for the frontend."""
     sections = [
         ("overdue_missing", "Overdue / Missing", "assignment"),
         ("due_today", "Due Today", "assignment"),
@@ -167,7 +177,23 @@ def serialize_agenda(agenda):
     }
 
 
-def build_agenda_response(days, mode="balanced", source_types=None, include_submitted=True):
+def canvas_is_configured() -> bool:
+    """Return whether a Canvas base URL and token are available. The token is not returned."""
+    try:
+        get_canvas_config()
+    except Exception:
+        return False
+
+    return True
+
+
+def build_agenda_response(
+    days: int,
+    mode: str = "balanced",
+    source_types: set[str] | None = None,
+    include_submitted: bool = True,
+) -> dict[str, Any]:
+    """Build the JSON agenda for one window, mode, and source filter."""
     selected_mode = parse_mode(mode)
     selected_sources = source_types or set(VALID_SOURCE_TYPES)
     agenda = get_study_agenda(
@@ -205,7 +231,7 @@ class StudyAgentHandler(SimpleHTTPRequestHandler):
         parsed = urlparse(self.path)
 
         if parsed.path == "/api/health":
-            self.send_json(200, {"ok": True})
+            self.send_json(200, {"ok": True, "canvasConfigured": canvas_is_configured()})
             return
 
         if parsed.path == "/api/agenda":
@@ -263,7 +289,7 @@ class StudyAgentHandler(SimpleHTTPRequestHandler):
         except OverflowError as exc:
             self.send_error_json(413, "BODY_TOO_LARGE", str(exc))
             return
-        except ValueError as exc:
+        except ValueError:
             self.send_error_json(400, "INVALID_JSON", "Request body must be JSON")
             return
 
@@ -355,7 +381,8 @@ class StudyAgentHandler(SimpleHTTPRequestHandler):
         )
 
 
-def run(host="127.0.0.1", port=8000):
+def run(host: str = "127.0.0.1", port: int = 8000) -> None:
+    """Serve the app on localhost. The Canvas token stays in this process."""
     server = ThreadingHTTPServer((host, port), StudyAgentHandler)
     print(f"Study Agent web demo running at http://{host}:{port}")
     print("Press Ctrl+C to stop.")

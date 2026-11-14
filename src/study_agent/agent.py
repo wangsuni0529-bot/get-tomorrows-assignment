@@ -1,9 +1,11 @@
+"""Chat-style router. It chooses a Canvas tool. It does not call a language model."""
+
 import argparse
 import sys
+from typing import Any
 
-from study_memory import mute_assignment
-from study_tools import format_agenda, get_study_agenda
-
+from study_agent.agenda import format_agenda, get_study_agenda
+from study_agent.memory import mute_assignment
 
 OFF_TOPIC_KEYWORDS = {
     "eat",
@@ -64,7 +66,8 @@ TIME_KEYWORDS = {
 }
 
 
-def is_canvas_study_question(text):
+def is_canvas_study_question(text: str) -> bool:
+    """Return whether the message is about schoolwork rather than an off-topic chat."""
     words = set(text.lower().replace("?", " ").split())
 
     if words & OFF_TOPIC_KEYWORDS and not words & STUDY_KEYWORDS:
@@ -79,7 +82,8 @@ def is_canvas_study_question(text):
     return asks_what_to_do and has_time_context
 
 
-def unsupported_question_message():
+def unsupported_question_message() -> str:
+    """Tell the student what this agent can answer."""
     return (
         "I only know how to check Canvas study tasks right now.\n"
         "Try asking: What should I do tomorrow? / What is due this week? / "
@@ -87,7 +91,8 @@ def unsupported_question_message():
     )
 
 
-def choose_tool_call(user_message):
+def choose_tool_call(user_message: str) -> dict[str, Any] | None:
+    """Map a study question to an agenda tool call, or None when it is off topic."""
     text = user_message.lower()
 
     if not is_canvas_study_question(text):
