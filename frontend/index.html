@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Study Agent</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Local Study Agent status">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">S</div>
+          <div>
+            <p class="brand-name">Study Agent</p>
+            <p class="brand-subtitle">Local Canvas workspace</p>
+          </div>
+        </div>
+
+        <div class="side-status">
+          <p class="side-label">Connection</p>
+          <div class="connection-pill">
+            <span class="pulse" aria-hidden="true"></span>
+            Local backend
+          </div>
+        </div>
+
+        <div class="side-status">
+          <p class="side-label">Privacy</p>
+          <p class="side-copy">Your Canvas token stays in this computer's .env file.</p>
+        </div>
+
+        <div class="side-status muted-box">
+          <p class="side-label">Memory</p>
+          <p class="side-copy">Muted low-priority items stay local.</p>
+        </div>
+
+        <div class="future-shell" aria-label="Future local shell placeholders">
+          <button disabled>Account later</button>
+          <button disabled>History later</button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Canvas Study Agent</p>
+            <h1>What should I do?</h1>
+          </div>
+          <button class="refresh-button" id="refresh-button" type="button">Refresh</button>
+        </header>
+
+        <section class="agent-panel" aria-label="Study Agent controls">
+          <form class="chat-form" id="chat-form">
+            <label class="sr-only" for="message">Ask your study agent</label>
+            <input
+              id="message"
+              name="message"
+              type="text"
+              autocomplete="off"
+              placeholder="Ask your study agent..."
+              value="what should I do tomorrow"
+            />
+            <button type="submit">Ask</button>
+          </form>
+
+          <div class="suggested-prompts" aria-label="Suggested questions">
+            <button type="button" data-prompt="what should I do tomorrow">What should I do tomorrow?</button>
+            <button type="button" data-prompt="what is due this week">What is due this week?</button>
+            <button type="button" data-prompt="what readings or prep do I have">Readings / prep</button>
+            <button type="button" data-prompt="am I missing anything">Missing anything?</button>
+            <button type="button" data-prompt="only show hard deadlines">Hard deadlines only</button>
+            <button type="button" data-prompt="show everything I might need for class">Show everything</button>
+          </div>
+
+          <div class="control-grid">
+            <fieldset class="control-group">
+              <legend>Time window</legend>
+              <div class="segmented" id="time-controls">
+                <button type="button" data-days="0" data-label="Overdue">Overdue</button>
+                <button type="button" data-days="1" data-label="Tomorrow" class="is-selected">Tomorrow</button>
+                <button type="button" data-days="3" data-label="Next 3 Days">Next 3 Days</button>
+                <button type="button" data-days="7" data-label="This Week">This Week</button>
+              </div>
+            </fieldset>
+
+            <fieldset class="control-group">
+              <legend>Mode</legend>
+              <div class="segmented" id="mode-controls">
+                <button type="button" data-mode="focused">Focused</button>
+                <button type="button" data-mode="balanced" class="is-selected">Balanced</button>
+                <button type="button" data-mode="catch_all">Catch-all</button>
+              </div>
+            </fieldset>
+          </div>
+
+          <fieldset class="source-controls">
+            <legend>Sources checked</legend>
+            <label><input type="checkbox" value="assignment" checked disabled /> Assignments</label>
+            <label><input type="checkbox" value="discussion" checked /> Discussions</label>
+            <label><input type="checkbox" value="module" checked /> Modules / Pages</label>
+            <label><input type="checkbox" value="announcement" checked /> Announcements</label>
+            <label><input type="checkbox" value="syllabus" checked /> Syllabus</label>
+          </fieldset>
+        </section>
+
+        <section class="result-header" aria-label="Current result status">
+          <div>
+            <span id="active-count">-</span>
+            <p>Active</p>
+          </div>
+          <div>
+            <span id="prep-count">-</span>
+            <p>Prep</p>
+          </div>
+          <div>
+            <span id="done-count">-</span>
+            <p>Done</p>
+          </div>
+          <div class="wide-stat">
+            <span id="current-scope">Tomorrow / Balanced</span>
+            <p>Current view</p>
+          </div>
+          <div class="wide-stat">
+            <span id="updated-at">Not loaded</span>
+            <p>Last checked</p>
+          </div>
+        </section>
+
+        <section class="agent-response" aria-live="polite">
+          <p id="agent-message">Click a button or ask a question to check Canvas.</p>
+        </section>
+
+        <section id="agenda" class="agenda" aria-label="Canvas agenda"></section>
+      </main>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
